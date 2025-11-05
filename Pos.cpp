@@ -7,7 +7,23 @@
 static float angleX = 30.0f;
 static float angleY = 45.0f;
 static float zoom = -15.0f;
+int selectedGateIndex = -1;
 
+struct Gates{
+    enum {CLOSED, OPENED} state;
+    bool selected;
+    float x, y, z; // Posisi
+    float angle;
+    float speed;
+    float yaw; // rotasi sumbu y
+};
+
+static Gates gates[4] = {
+    {Gates::CLOSED, false, 10.7f, -1.4f, 0.4f, 0.0f, 90.0f, 0.0f}, // Kanan Depan
+    {Gates::CLOSED, false, 9.2f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f}, // Kanan Belakang
+    {Gates::CLOSED, false, -9.4f, -1.4f, -0.4f, 0.0f, 90.0f, 0.0f}, // Kiri Depan
+    {Gates::CLOSED, false, -10.7f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f} // Kiri Belakang
+};
 
 #pragma region Draw Pos
 // Fungsi menggambar kubus/dinding abu pos satpam (Edit mode blender)
@@ -55,6 +71,42 @@ void drawColoredCube(float width, float height, float depth,
     glVertex3f(-width / 2, height / 2, depth / 2);
     glVertex3f(-width / 2, height / 2, -depth / 2);
 
+    glEnd();
+}
+// Tambahkan helper ini
+void drawCubeNoColor(float width, float height, float depth)
+{
+    glBegin(GL_QUADS);
+    // Front
+    glVertex3f(-width/2, -height/2,  depth/2);
+    glVertex3f( width/2, -height/2,  depth/2);
+    glVertex3f( width/2,  height/2,  depth/2);
+    glVertex3f(-width/2,  height/2,  depth/2);
+    // Back
+    glVertex3f(-width/2, -height/2, -depth/2);
+    glVertex3f(-width/2,  height/2, -depth/2);
+    glVertex3f( width/2,  height/2, -depth/2);
+    glVertex3f( width/2, -height/2, -depth/2);
+    // Top
+    glVertex3f(-width/2,  height/2, -depth/2);
+    glVertex3f(-width/2,  height/2,  depth/2);
+    glVertex3f( width/2,  height/2,  depth/2);
+    glVertex3f( width/2,  height/2, -depth/2);
+    // Bottom
+    glVertex3f(-width/2, -height/2, -depth/2);
+    glVertex3f( width/2, -height/2, -depth/2);
+    glVertex3f( width/2, -height/2,  depth/2);
+    glVertex3f(-width/2, -height/2,  depth/2);
+    // Right
+    glVertex3f( width/2, -height/2, -depth/2);
+    glVertex3f( width/2,  height/2, -depth/2);
+    glVertex3f( width/2,  height/2,  depth/2);
+    glVertex3f( width/2, -height/2,  depth/2);
+    // Left
+    glVertex3f(-width/2, -height/2, -depth/2);
+    glVertex3f(-width/2, -height/2,  depth/2);
+    glVertex3f(-width/2,  height/2,  depth/2);
+    glVertex3f(-width/2,  height/2, -depth/2);
     glEnd();
 }
 
@@ -217,6 +269,186 @@ void drawPosSatpam()
     glPopMatrix();
 }
 #pragma endregion
+
+#pragma region Draw Palang
+void drawBodyPalang()
+{
+    // KANAN
+    // 1. Platform/Lantai bawah (hitam) kanan
+    glPushMatrix();
+    glTranslatef(10.0f, -4.0f, 0.0f);
+    drawColoredCube(3.0f, 0.3f, 6.0f, 0.2f, 0.2f, 0.2f);
+    glPopMatrix();
+
+    // Bagian bawah scan kTM
+    glPushMatrix();
+    glTranslatef(10.0f, -2.5f, 1.5f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 2.0f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+
+    // Bagian atas scan KTM
+    glPushMatrix();
+    glTranslatef(10.0f, 0.0f, 1.5f);
+    drawColoredCube(2.5f, 2.0f, 2.0f, 0.8f, 0.0f, 0.0f);
+    glPopMatrix();
+
+    //Bagian pilar palang depan
+    glPushMatrix();
+    glTranslatef(10.0f, -2.5f, -0.5f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+
+    //Bagian pilar palang belakang
+    glPushMatrix();
+    glTranslatef(10.0f, -2.5f, -2.2f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+
+    // KIRI
+    // 1. Platform/Lantai bawah (hitam) kiri
+    glPushMatrix();
+    glTranslatef(-10.0f, -4.0f, 0.0f);
+    drawColoredCube(3.0f, 0.3f, 6.0f, 0.2f, 0.2f, 0.2f);
+    glPopMatrix();
+
+    // Bagian bawah scan kTM
+    glPushMatrix();
+    glTranslatef(-10.0f, -2.5f, 1.5f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 2.0f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+
+    // Bagian atas scan KTM
+    glPushMatrix();
+    glTranslatef(-10.0f, 0.0f, 1.5f);
+    drawColoredCube(2.5f, 2.0f, 2.0f, 0.8f, 0.0f, 0.0f);
+    glPopMatrix();
+
+    //Bagian pilar palang depan
+    glPushMatrix();
+    glTranslatef(-10.0f, -2.5f, -0.5f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+
+    //Bagian pilar palang belakang
+    glPushMatrix();
+    glTranslatef(-10.0f, -2.5f, -2.2f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
+    glPopMatrix();
+}
+
+void drawLenganPalang(float x, float y, float z, float angle, bool selected, float yaw)
+{
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glRotatef(yaw, 0.0f, 1.0f, 0.0f);
+    glRotatef(angle, 0.0f, 0.0f, 1.0f);
+    glScalef(0.5f, 0.5f, 0.5f);
+    glTranslatef(3.0f, 0.0f, 0.0f);
+
+    if (selected) glColor3f(1.0f, 1.0f, 1.0f);     // putih saat selected
+    else          glColor3f(0.0f, 0.0f, 1.0f);     // biru default
+
+    // Pakai versi tanpa set warna internal agar warna di atas kepakai
+    drawCubeNoColor(14.0f, 1.0f, 0.5f);
+    glPopMatrix();
+}
+
+void drawPalang()
+{
+    drawBodyPalang();
+    for (int i = 0; i < 4; ++i) {
+        bool sel = (i == selectedGateIndex);
+        drawLenganPalang(gates[i].x, gates[i].y, gates[i].z, gates[i].angle, sel, gates[i].yaw);
+    }
+}
+#pragma endregion
+
+#pragma region Selection & Animation
+int SelectHit(int mx, int my)
+{
+    GLboolean wasLighting = glIsEnabled(GL_LIGHTING);
+    GLboolean wasDither   = glIsEnabled(GL_DITHER);
+    GLboolean wasBlend    = glIsEnabled(GL_BLEND);
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DITHER);
+    glDisable(GL_BLEND);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    glTranslatef(0.0f, 0.0f, zoom);
+    glRotatef(angleX, 1,0,0);
+    glRotatef(angleY, 0,1,0);
+
+    for (int i = 0; i < 4; ++i) {
+        glColor3ub((unsigned char)(i + 1), 0, 0);
+        glPushMatrix();
+        glTranslatef(gates[i].x, gates[i].y + 1.2f, gates[i].z);
+        // proxy AABB agak besar supaya kena saat lengan berputar
+        drawCubeNoColor(6.5f, 4.0f, 6.5f);
+        glPopMatrix();
+    }
+    glFinish(); 
+
+    int vp[4]; glGetIntegerv(GL_VIEWPORT, vp);
+    unsigned char px[3] = {0,0,0};
+    glReadPixels(mx, vp[3]-my-1, 1,1, GL_RGB, GL_UNSIGNED_BYTE, px);
+
+    if (wasBlend)   glEnable(GL_BLEND);
+    if (wasDither)  glEnable(GL_DITHER);
+    if (wasLighting)glEnable(GL_LIGHTING);
+
+    int id = (int)px[0] - 1;
+    return (id >= 0 && id < 4) ? id : -1;
+}
+
+void mouse(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        int id = SelectHit(x, y);
+        selectedGateIndex = id;
+        glutPostRedisplay();
+    }
+}
+
+void UpdateGates(float dt)
+{
+    for (int i = 0; i < 4; ++i) {
+        Gates &g = gates[i];
+        if (g.state == Gates::OPENED) {
+            if (g.angle < 90.0f) {
+                g.angle += g.speed * dt;
+                if (g.angle > 90.0f) g.angle = 90.0f;
+            }
+        }
+        else if (g.state == Gates::CLOSED) {
+            if (g.angle > 0.0f) {
+                g.angle -= g.speed * dt;
+                if (g.angle < 0.0f) g.angle = 0.0f;
+            }
+        }
+    }
+}
+#pragma endregion
+#pragma region Setup Function
+void onTimer(int)
+{
+    static int prevMS = glutGet(GLUT_ELAPSED_TIME);
+    int current = glutGet(GLUT_ELAPSED_TIME);
+    float dt = (current - prevMS) / 1000.0f; // detik
+    prevMS = current;
+
+    UpdateGates(dt);
+    glutPostRedisplay();
+    glutTimerFunc(16, onTimer, 0);
+}
 // Setup pencahayaan
 void setupLighting()
 {
@@ -236,9 +468,6 @@ void setupLighting()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpec);
 }
-
-
-#pragma region Setup Function
 // Drawing routine
 void drawScene()
 {
@@ -250,6 +479,7 @@ void drawScene()
     glRotatef(angleY, 0.0f, 1.0f, 0.0f);
 
     drawPosSatpam();
+    drawPalang();
 
     glutSwapBuffers();
 }
@@ -310,6 +540,19 @@ void keyInput(unsigned char key, int x, int y)
         angleY = 45.0f;
         zoom = -15.0f;
         break;
+    case ' ':
+        if (selectedGateIndex >= 0) {
+            Gates &g = gates[selectedGateIndex];
+            if (g.state == Gates::CLOSED) {
+                g.state = Gates::OPENED;
+                std::cout << "Palang " << selectedGateIndex << " dibuka\n";
+            }
+            else if (g.state == Gates::OPENED) {
+                g.state = Gates::CLOSED;
+                std::cout << "Palang " << selectedGateIndex << " ditutup\n";
+            }
+        }
+        break;
     }
     glutPostRedisplay();
 }
@@ -366,11 +609,13 @@ int main(int argc, char** argv)
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyInput);
     glutSpecialFunc(specialKeyInput);
+    glutMouseFunc(mouse);
 
     glewExperimental = GL_TRUE;
     glewInit();
 
     setup();
+    glutTimerFunc(16, onTimer, 0);
 
     glutMainLoop();
 
