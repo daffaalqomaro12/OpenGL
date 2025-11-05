@@ -8,6 +8,8 @@ static float angleX = 30.0f;
 static float angleY = 45.0f;
 static float zoom = -15.0f;
 
+
+#pragma region Draw Pos
 // Fungsi menggambar kubus/dinding abu pos satpam (Edit mode blender)
 void drawColoredCube(float width, float height, float depth,
     float r, float g, float b)
@@ -214,7 +216,7 @@ void drawPosSatpam()
 
     glPopMatrix();
 }
-
+#pragma endregion
 // Setup pencahayaan
 void setupLighting()
 {
@@ -235,6 +237,8 @@ void setupLighting()
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpec);
 }
 
+
+#pragma region Setup Function
 // Drawing routine
 void drawScene()
 {
@@ -342,6 +346,8 @@ void printInteraction()
     std::cout << "- R: Reset posisi" << std::endl;
     std::cout << "- ESC: Keluar" << std::endl;
 }
+
+#pragma endregion
 
 // Main
 int main(int argc, char** argv)
