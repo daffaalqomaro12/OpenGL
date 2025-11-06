@@ -19,11 +19,14 @@ struct Gates{
 };
 
 static Gates gates[4] = {
-    {Gates::CLOSED, false, 10.7f, -1.4f, 0.4f, 0.0f, 90.0f, 0.0f}, // Kanan Depan
-    {Gates::CLOSED, false, 9.2f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f}, // Kanan Belakang
-    {Gates::CLOSED, false, -9.4f, -1.4f, -0.4f, 0.0f, 90.0f, 0.0f}, // Kiri Depan
-    {Gates::CLOSED, false, -10.7f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f} // Kiri Belakang
+    // Kanan: Tambah 10 unit pada X
+        {Gates::CLOSED, false, 20.7f, -1.4f, 0.4f, 0.0f, 90.0f, 0.0f},   // Kanan Depan (10.7f + 10 = 20.7f)
+        {Gates::CLOSED, false, 19.2f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f}, // Kanan Belakang (9.2f + 10 = 19.2f)
+        // Kiri: Kurang 10 unit dari X
+        {Gates::CLOSED, false, -19.4f, -1.4f, -0.4f, 0.0f, 90.0f, 0.0f},  // Kiri Depan (-9.4f - 10 = -19.4f)
+        {Gates::CLOSED, false, -20.7f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f} // Kiri Belakang (-10.7f - 10 = -20.7f)
 };
+
 
 
 //////////////////////////////////////
@@ -181,98 +184,123 @@ void drawPosSatpam()
     drawColoredCube(40.0f, 0.3f, 40.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
-    // 2. Base biru bawah
+    // 2. Base biru bawah (Lebar 10.5f, Kedalaman 8.5f)
     glPushMatrix();
     glTranslatef(0.0f, -2.5f, 0.0f);
-    drawColoredCube(5.5f, 2.5f, 5.5f, 0.0f, 0.2f, 0.8f);
+    drawColoredCube(10.1f, 2.5f, 8.1f, 0.0f, 0.2f, 0.8f);
     glPopMatrix();
 
-    // 3. Counter merah
+    // 3. Counter merah (Lebar 11.0f, Kedalaman 9.0f)
     glPushMatrix();
-    glTranslatef(0.0f, -0.8f, 0.0f);
-    drawColoredCube(5.8f, 0.4f, 5.8f, 0.8f, 0.1f, 0.1f);
+    glTranslatef(0.0f, -1.1f, 0.0f);
+    drawColoredCube(10.2f, 0.4f, 8.2f, 0.8f, 0.1f, 0.1f);
     glPopMatrix();
 
-    // 4. Dinding abu-abu
+    // 4. Dinding abu-abu (Lebar 10.0f, Kedalaman 8.0f)
     glPushMatrix();
     glTranslatef(0.0f, 1.5f, 0.0f);
-    drawColoredCube(5.0f, 4.0f, 5.0f, 0.7f, 0.7f, 0.7f);
+    drawColoredCube(10.0f, 6.0f, 8.0f, 0.7f, 0.7f, 0.7f);
     glPopMatrix();
 
-    // 5. Jendela-jendela depan
-    // Jendela kiri atas
+
+    ////////////////////////////////////////////////////////////////
+    // 5. PENEMPATAN JENDELA DAN PINTU (RELATIF TERHADAP DINDING)
+    ////////////////////////////////////////////////////////////////
+
+    // Dimensi Jendela: 3.8 x 3.8
+    // Posisi Dinding: X_edge = 5.0f, Z_edge = 4.0f
+
+    // SISI DEPAN (Z = 4.0f)
+    // 5.1. Jendela depan kiri
     glPushMatrix();
-    glTranslatef(-1.5f, 2.8f, 2.51f);
-    drawWindow(0.8f, 0.6f);
+    glTranslatef(-2.5f, 1.4f, 4.01f); // 4.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
-    // Jendela tengah atas
+    // 5.2. Jendela depan kanan
     glPushMatrix();
-    glTranslatef(0.0f, 2.8f, 2.51f);
-    drawWindow(2.0f, 0.6f);
+    glTranslatef(2.5f, 1.4f, 4.01f); // 4.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
-    // Jendela kanan atas
-    //glPushMatrix();
-    //glTranslatef(1.8f, 2.8f, 2.51f);
-    //drawWindow(0.8f, 0.6f);
-    //glPopMatrix();
-
-// Jendela kanan_Test revisi
+    // SISI KANAN (X = 5.0f)
+    // Semua transformasi di sini harus dirotasi 90 derajat di sumbu Y
     glPushMatrix();
-    // 1. ROTASI: Putar 90 derajat di sekitar sumbu Y agar menghadap ke kanan.
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 
-    // 2. TRANSLASI: Geser ke posisi yang sesuai di dinding kanan.
-    //    - Z = 2.51f (tetap di depan)
-    //    - X = -1.5f (sekarang menjadi koordinat Z horizontal di dinding kanan)
-    //    - Y = 2.8f (tetap ketinggian)
-    // Disini "Kanan-kiri" adalah sumbu Z bukan X. Entah apa yang bikin gini..
-    // X = depan-belakang, Y = atas-bawah, Z = Kanan-kiri
-    glTranslatef(-1.5f, 2.8f, 4.0f); //Gerakkan posisi relatif (objek mode transformations)
-    drawWindow(0.8f, 0.6f); //panggil dan bangun blueprint ke dunia 3d
-    glPopMatrix();
-
-
-    // Jendela besar tengah
+    // 5.3. Jendela rightside kiri (diputar menjadi X=-1.5f, Z=4.01f)
     glPushMatrix();
-    glTranslatef(-0.3f, 1.2f, 2.51f);
-    drawWindow(2.5f, 2.2f);
+    glTranslatef(-1.5f, 1.4f, 5.01f); // 5.0f + 0.01f (dipindah ke dinding baru)
+    drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
-    // Jendela kiri bawah
+    // 5.4. Jendela rightside kanan
     glPushMatrix();
-    glTranslatef(-1.8f, 1.5f, 2.51f);
-    drawWindow(0.8f, 1.5f);
+    glTranslatef(1.5f, 1.4f, 5.01f); // 5.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
-    // Jendela kiri bawah kecil
+    glPopMatrix(); // Akhiri rotasi 90 derajat
+
+    // SISI KIRI (X = -5.0f)
+    // Semua transformasi di sini harus dirotasi -90 derajat di sumbu Y
     glPushMatrix();
-    glTranslatef(-1.8f, 0.2f, 2.51f);
-    drawWindow(0.8f, 0.8f);
+    glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+
+    // 5.5. Jendela leftside kiri
+    glPushMatrix();
+    glTranslatef(-1.5f, 1.4f, 5.01f); // 5.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
+    // 5.6. Jendela leftside kanan
+    glPushMatrix();
+    glTranslatef(1.5f, 1.4f, 5.01f); // 5.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
+    glPopMatrix();
+
+    glPopMatrix(); // Akhiri rotasi -90 derajat
+
+    // SISI BELAKANG (Z = -4.0f)
+    // Semua transformasi di sini harus dirotasi 180 derajat di sumbu Y
+    glPushMatrix();
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+
+    // 5.7. Jendela belakang kiri (di sisi kiri)
+    glPushMatrix();
+    glTranslatef(-2.5f, 1.4f, 4.01f); // 4.0f + 0.01f
+    drawWindow(3.8f, 3.8f);
+    glPopMatrix();
+
+    glPopMatrix(); // Akhiri rotasi 180 derajat
+
+
+    // PINTU (Tetap di Depan)
     // 6. Pintu samping kanan
     glPushMatrix();
-    glTranslatef(1.9f, 1.0f, 2.51f);
-    drawDoor(0.9f, 3.0f);
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+    glTranslatef(1.9f, -2.7f, 4.01f);
+
+    drawDoor(3.5f, 6.0f);
     glPopMatrix();
 
-    // 7. Strip hijau
+
+    // STRIP DAN ATAP (DIMENSI DIPERBESAR)
+    // 7. Strip hijau (Lebar 11.0f, Kedalaman 9.0f)
     glPushMatrix();
-    glTranslatef(0.0f, 3.7f, 0.0f);
-    drawColoredCube(5.2f, 0.4f, 5.2f, 0.2f, 0.7f, 0.3f);
+    glTranslatef(0.0f, 4.0f, 0.0f);
+    drawColoredCube(11.0f, 0.4f, 9.0f, 0.2f, 0.7f, 0.3f);
     glPopMatrix();
 
-    // 8. Atap biru
+    // 8. Atap biru (Lebar 12.0f, Kedalaman 10.0f)
     glPushMatrix();
     glTranslatef(0.0f, 4.5f, 0.0f);
-    drawColoredCube(6.0f, 0.6f, 6.0f, 0.0f, 0.2f, 0.9f);
+    drawColoredCube(12.0f, 0.6f, 10.0f, 0.0f, 0.2f, 0.9f);
     glPopMatrix();
 
-    // Text "POS SATPAM" (simulasi dengan kotak hitam)
+    // Text "POS SATPAM"
     glPushMatrix();
-    glTranslatef(0.0f, 1.2f, 2.52f);
+    glTranslatef(0.0f, 1.2f, 9.02f);
     glColor3f(0.0f, 0.0f, 0.0f);
     glBegin(GL_QUADS);
     glVertex3f(-0.8f, -0.2f, 0.0f);
@@ -300,33 +328,33 @@ void drawBodyPalang()
     // KANAN
     // 1. Platform/Lantai bawah (hitam) kanan
     glPushMatrix();
-    glTranslatef(10.0f, -4.0f, 0.0f);
+    glTranslatef(20.0f, -4.0f, 0.0f);
     drawColoredCube(3.0f, 0.3f, 6.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
     // Bagian bawah scan kTM
     glPushMatrix();
-    glTranslatef(10.0f, -2.5f, 1.5f);
+    glTranslatef(20.0f, -2.5f, 1.5f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 2.0f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
 
     // Bagian atas scan KTM
     glPushMatrix();
-    glTranslatef(10.0f, 0.0f, 1.5f);
+    glTranslatef(20.0f, 0.0f, 1.5f);
     drawColoredCube(2.5f, 2.0f, 2.0f, 0.8f, 0.0f, 0.0f);
     glPopMatrix();
 
     //Bagian pilar palang depan
     glPushMatrix();
-    glTranslatef(10.0f, -2.5f, -0.5f);
+    glTranslatef(20.0f, -2.5f, -0.5f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
 
     //Bagian pilar palang belakang
     glPushMatrix();
-    glTranslatef(10.0f, -2.5f, -2.2f);
+    glTranslatef(20.0f, -2.5f, -2.2f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
@@ -334,33 +362,33 @@ void drawBodyPalang()
     // KIRI
     // 1. Platform/Lantai bawah (hitam) kiri
     glPushMatrix();
-    glTranslatef(-10.0f, -4.0f, 0.0f);
+    glTranslatef(-20.0f, -4.0f, 0.0f);
     drawColoredCube(3.0f, 0.3f, 6.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
     // Bagian bawah scan kTM
     glPushMatrix();
-    glTranslatef(-10.0f, -2.5f, 1.5f);
+    glTranslatef(-20.0f, -2.5f, 1.5f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 2.0f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
 
     // Bagian atas scan KTM
     glPushMatrix();
-    glTranslatef(-10.0f, 0.0f, 1.5f);
+    glTranslatef(-20.0f, 0.0f, 1.5f);
     drawColoredCube(2.5f, 2.0f, 2.0f, 0.8f, 0.0f, 0.0f);
     glPopMatrix();
 
     //Bagian pilar palang depan
     glPushMatrix();
-    glTranslatef(-10.0f, -2.5f, -0.5f);
+    glTranslatef(-20.0f, -2.5f, -0.5f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
 
     //Bagian pilar palang belakang
     glPushMatrix();
-    glTranslatef(-10.0f, -2.5f, -2.2f);
+    glTranslatef(-20.0f, -2.5f, -2.2f);
     glScalef(1.0f, 1.0f, 1.0f);
     drawColoredCube(2.0f, 3.0f, 1.5f, 0.5f, 0.5f, 0.5f);
     glPopMatrix();
