@@ -4,8 +4,8 @@
 #include <iostream>
 
 // Globals
-static float angleX = 30.0f;
-static float angleY = 45.0f;
+static float angleX = 0.0f;
+static float angleY = 0.0f;
 static float zoom = -25.0f;
 int selectedGateIndex = -1;
 
@@ -236,8 +236,8 @@ void drawCanopyRoof(float width, float depth, float height)
 // Fungsi untuk RENDER / menggambar seluruh terop/tenda
 void drawCanopy()
 {
-    float canopyWidth = 26.0f;
-    float canopyDepth = 24.0f;
+    float canopyWidth = 36.0f;
+    float canopyDepth = 34.0f;
     float poleHeight = 12.0f;
     float roofHeight = 8.0f;
 
@@ -379,7 +379,7 @@ void drawPosSatpam()
 
     // Banner POS SATPAM
     glPushMatrix();
-    glTranslatef(-6.0f, 5.0f, 9.02f);
+    glTranslatef(-6.0f, 5.0f, 16.0f);
     glColor3f(0.0f, 0.0f, 0.0f);
     drawColoredCube(10.0f, 5.0f, 0.2f, 0.424f, 0.043f, 0.663f);
     glEnd();
@@ -667,9 +667,9 @@ void keyInput(unsigned char key, int x, int y)
         break;
     case 'r':
     case 'R':
-        angleX = 30.0f;
-        angleY = 45.0f;
-        zoom = -25.0f;
+        angleX = 0.0f;
+        angleY = 0.0f;
+        zoom = -45.0f;
         break;
     case ' ':
         if (selectedGateIndex >= 0) {
