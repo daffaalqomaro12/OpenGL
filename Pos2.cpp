@@ -20,19 +20,21 @@ struct Gates {
 };
 
 static Gates gates[4] = {
-    // Kanan: Tambah 10 unit pada X
+    // Kanan: 
         {Gates::CLOSED, false, 12.7f, -1.4f, 0.4f, 0.0f, 90.0f, 0.0f},   // Kanan Depan
         {Gates::CLOSED, false, 11.2f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f}, // Kanan Belakang
-        // Kiri: Kurang 10 unit dari X
+   // Kiri:
         {Gates::CLOSED, false, -11.4f, -1.4f, -0.4f, 0.0f, 90.0f, 0.0f},  // Kiri Depan
         {Gates::CLOSED, false, -12.7f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f} // Kiri Belakang
 };
 
 
 
-//////////////////////////////////////
+//===================================
+
 // Blueprint Pos Satpam
-/////////////////////////////////////
+
+//===================================
 
 
 #pragma region Draw Pos
@@ -268,36 +270,36 @@ void drawPosSatpam()
 {
     glPushMatrix();
 
-    // 1. Platform/Lantai bawah (tetap hitam)
+    // 1. Platform/Lantai bawah (hitam)
     glPushMatrix();
     glTranslatef(0.0f, -4.0f, 0.0f);
     drawColoredCube(40.0f, 0.3f, 40.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
-    // 2. Base biru bawah -> Kuning Pucat/Eggwhite
+    // 2. Base bawah kuning
     glPushMatrix();
     glTranslatef(0.0f, -2.5f, 0.0f);
-    drawColoredCube(10.1f, 2.5f, 8.1f, 0.95f, 0.92f, 0.78f); // <-- Warna Eggwhite
+    drawColoredCube(10.1f, 2.5f, 8.1f, 0.95f, 0.92f, 0.78f); 
     glPopMatrix();
 
-    // 3. Counter merah -> Abu-abu Sedang
+    // 3. Counter Abu-abu 
     glPushMatrix();
     glTranslatef(0.0f, -1.1f, 0.0f);
-    drawColoredCube(10.2f, 0.4f, 8.2f, 0.65f, 0.65f, 0.65f); // <-- Warna Abu-abu Sedang
+    drawColoredCube(10.2f, 0.4f, 8.2f, 0.65f, 0.65f, 0.65f); 
     glPopMatrix();
 
-    // 4. Dinding abu-abu -> Putih Gading
+    // 4. Dinding abu-abu 
     glPushMatrix();
     glTranslatef(0.0f, 1.5f, 0.0f);
-    drawColoredCube(10.0f, 6.0f, 8.0f, 0.98f, 0.98f, 0.95f); // <-- Warna Putih Gading
+    drawColoredCube(10.0f, 6.0f, 8.0f, 0.98f, 0.98f, 0.95f); 
     glPopMatrix();
 
-    ////////////////////////////////////////////////////////////////
+    //=================================================
     // 5. PENEMPATAN JENDELA DAN PINTU (Tetap)
-    ////////////////////////////////////////////////////////////////
+    //================================================
 
 
-    // SISI DEPAN (Z = 4.0f)
+    // SISI DEPAN 
     // 5.1. Jendela depan kiri
     glPushMatrix();
     glTranslatef(-2.5f, 1.4f, 4.01f);
@@ -310,7 +312,7 @@ void drawPosSatpam()
     drawWindow(3.8f, 3.8f);
     glPopMatrix();
 
-    // SISI KANAN (X = 5.0f)
+    // SISI KANAN 
     glPushMatrix();
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
 
@@ -328,7 +330,7 @@ void drawPosSatpam()
 
     glPopMatrix();
 
-    // SISI KIRI (X = -5.0f)
+    // SISI KIRI 
     glPushMatrix();
     glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
 
@@ -346,7 +348,7 @@ void drawPosSatpam()
 
     glPopMatrix();
 
-    // SISI BELAKANG (Z = -4.0f)
+    // SISI BELAKANG 
     glPushMatrix();
     glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
 
@@ -367,19 +369,19 @@ void drawPosSatpam()
     glPopMatrix();
 
     // STRIP DAN ATAP
-    // 7. Strip hijau -> Abu-abu Sedang
+    // 7. Strip  Abu-abu Sedang
     glPushMatrix();
     glTranslatef(0.0f, 4.0f, 0.0f);
     drawColoredCube(11.0f, 0.4f, 9.0f, 0.65f, 0.65f, 0.65f); // <-- Warna Abu-abu Sedang
     glPopMatrix();
 
-    // 8. Atap biru -> Kuning Pucat/Eggwhite
+    // 8. Atap Kuning Pucat/Eggwhite
     glPushMatrix();
     glTranslatef(0.0f, 4.5f, 0.0f);
     drawColoredCube(12.0f, 0.6f, 10.0f, 0.95f, 0.92f, 0.78f); // <-- Warna Eggwhite
     glPopMatrix();
 
-    // Banner POS SATPAM (Tetap Ungu Tua)
+    // Banner POS SATPAM 
     glPushMatrix();
     glTranslatef(-6.0f, 5.0f, 16.0f);
     glColor3f(0.0f, 0.0f, 0.0f);
@@ -586,17 +588,17 @@ void setupLighting()
 
     GLfloat lightPos[] = { 5.0f, 10.0f, 10.0f, 1.0f };
     GLfloat lightAmb[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-    GLfloat lightDif[] = { 0.7f, 0.7f, 0.7f, 1.0f }; // Nilai diffuse disesuaikan
-    GLfloat lightSpec[] = { 0.7f, 0.7f, 0.7f, 1.0f }; // Nilai specular disesuaikan
+    GLfloat lightDif[] = { 0.7f, 0.7f, 0.7f, 1.0f }; 
+    GLfloat lightSpec[] = { 0.7f, 0.7f, 0.7f, 1.0f }; 
 
-    // Terapkan rotasi cahaya pada Matriks ModelView
-    glMatrixMode(GL_MODELVIEW); // Pastikan kita di ModelView
-    glPushMatrix(); // Simpan matriks saat ini
-    glRotatef(lightAngle, 0.0f, 1.0f, 0.0f); // ROTASI CAHAYA di sumbu Y
+    // Rotasi cahaya Matriks ModelView
+    glMatrixMode(GL_MODELVIEW); 
+    glPushMatrix(); 
+    glRotatef(lightAngle, 0.0f, 1.0f, 0.0f); 
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos); // Tetapkan posisi yang sudah dirotasi
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos); 
 
-    glPopMatrix(); // Kembalikan matriks
+    glPopMatrix(); 
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif);
