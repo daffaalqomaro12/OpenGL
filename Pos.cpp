@@ -25,7 +25,16 @@ static Gates gates[4] = {
     {Gates::CLOSED, false, -10.7f, -1.4f, -3.0f, 0.0f, 90.0f, 180.0f} // Kiri Belakang
 };
 
+
+//////////////////////////////////////
+
+// Blueprint Pos Satpam
+
+/////////////////////////////////////
+
+
 #pragma region Draw Pos
+
 // Fungsi menggambar kubus/dinding abu pos satpam (Edit mode blender)
 void drawColoredCube(float width, float height, float depth,
     float r, float g, float b)
@@ -154,6 +163,13 @@ void drawDoor(float width, float height)
     glEnd();
 }
 
+//=====================================
+
+// Render dan transformasi Pos Satpam
+
+//======================================
+
+
 // Fungsi untuk menggambar pos satpam (Object Mode blender)
 void drawPosSatpam()
 {
@@ -162,7 +178,7 @@ void drawPosSatpam()
     // 1. Platform/Lantai bawah (hitam)
     glPushMatrix();
     glTranslatef(0.0f, -4.0f, 0.0f);
-    drawColoredCube(6.0f, 0.3f, 6.0f, 0.2f, 0.2f, 0.2f);
+    drawColoredCube(40.0f, 0.3f, 40.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
     // 2. Base biru bawah
@@ -270,6 +286,14 @@ void drawPosSatpam()
 }
 #pragma endregion
 
+
+//==================================
+
+// Render dan transformasi Palang
+
+//==================================
+
+// Fungsi untuk menggambar palang
 #pragma region Draw Palang
 void drawBodyPalang()
 {
@@ -592,7 +616,12 @@ void printInteraction()
 
 #pragma endregion
 
+//==================================
+
 // Main
+
+//==================================
+
 int main(int argc, char** argv)
 {
     printInteraction();
