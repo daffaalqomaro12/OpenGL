@@ -8,6 +8,7 @@ static float angleX = 0.0f;
 static float angleY = 0.0f;
 static float zoom = -25.0f;
 int selectedGateIndex = -1;
+static float lightAngle = 0.0f;
 
 struct Gates {
     enum { CLOSED, OPENED } state;
@@ -267,33 +268,34 @@ void drawPosSatpam()
 {
     glPushMatrix();
 
-    // 1. Platform/Lantai bawah (hitam)
+    // 1. Platform/Lantai bawah (tetap hitam)
     glPushMatrix();
     glTranslatef(0.0f, -4.0f, 0.0f);
     drawColoredCube(40.0f, 0.3f, 40.0f, 0.2f, 0.2f, 0.2f);
     glPopMatrix();
 
-    // 2. Base biru bawah
+    // 2. Base biru bawah -> Kuning Pucat/Eggwhite
     glPushMatrix();
     glTranslatef(0.0f, -2.5f, 0.0f);
-    drawColoredCube(10.1f, 2.5f, 8.1f, 0.0f, 0.2f, 0.8f);
+    drawColoredCube(10.1f, 2.5f, 8.1f, 0.95f, 0.92f, 0.78f); // <-- Warna Eggwhite
     glPopMatrix();
 
-    // 3. Counter merah
+    // 3. Counter merah -> Abu-abu Sedang
     glPushMatrix();
     glTranslatef(0.0f, -1.1f, 0.0f);
-    drawColoredCube(10.2f, 0.4f, 8.2f, 0.8f, 0.1f, 0.1f);
+    drawColoredCube(10.2f, 0.4f, 8.2f, 0.65f, 0.65f, 0.65f); // <-- Warna Abu-abu Sedang
     glPopMatrix();
 
-    // 4. Dinding abu-abu
+    // 4. Dinding abu-abu -> Putih Gading
     glPushMatrix();
     glTranslatef(0.0f, 1.5f, 0.0f);
-    drawColoredCube(10.0f, 6.0f, 8.0f, 0.7f, 0.7f, 0.7f);
+    drawColoredCube(10.0f, 6.0f, 8.0f, 0.98f, 0.98f, 0.95f); // <-- Warna Putih Gading
     glPopMatrix();
 
     ////////////////////////////////////////////////////////////////
-    // 5. PENEMPATAN JENDELA DAN PINTU
+    // 5. PENEMPATAN JENDELA DAN PINTU (Tetap)
     ////////////////////////////////////////////////////////////////
+
 
     // SISI DEPAN (Z = 4.0f)
     // 5.1. Jendela depan kiri
@@ -365,19 +367,19 @@ void drawPosSatpam()
     glPopMatrix();
 
     // STRIP DAN ATAP
-    // 7. Strip hijau
+    // 7. Strip hijau -> Abu-abu Sedang
     glPushMatrix();
     glTranslatef(0.0f, 4.0f, 0.0f);
-    drawColoredCube(11.0f, 0.4f, 9.0f, 0.2f, 0.7f, 0.3f);
+    drawColoredCube(11.0f, 0.4f, 9.0f, 0.65f, 0.65f, 0.65f); // <-- Warna Abu-abu Sedang
     glPopMatrix();
 
-    // 8. Atap biru
+    // 8. Atap biru -> Kuning Pucat/Eggwhite
     glPushMatrix();
     glTranslatef(0.0f, 4.5f, 0.0f);
-    drawColoredCube(12.0f, 0.6f, 10.0f, 0.0f, 0.2f, 0.9f);
+    drawColoredCube(12.0f, 0.6f, 10.0f, 0.95f, 0.92f, 0.78f); // <-- Warna Eggwhite
     glPopMatrix();
 
-    // Banner POS SATPAM
+    // Banner POS SATPAM (Tetap Ungu Tua)
     glPushMatrix();
     glTranslatef(-6.0f, 5.0f, 16.0f);
     glColor3f(0.0f, 0.0f, 0.0f);
@@ -584,10 +586,18 @@ void setupLighting()
 
     GLfloat lightPos[] = { 5.0f, 10.0f, 10.0f, 1.0f };
     GLfloat lightAmb[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-    GLfloat lightDif[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    GLfloat lightSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    GLfloat lightDif[] = { 0.7f, 0.7f, 0.7f, 1.0f }; // Nilai diffuse disesuaikan
+    GLfloat lightSpec[] = { 0.7f, 0.7f, 0.7f, 1.0f }; // Nilai specular disesuaikan
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    // Terapkan rotasi cahaya pada Matriks ModelView
+    glMatrixMode(GL_MODELVIEW); // Pastikan kita di ModelView
+    glPushMatrix(); // Simpan matriks saat ini
+    glRotatef(lightAngle, 0.0f, 1.0f, 0.0f); // ROTASI CAHAYA di sumbu Y
+
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos); // Tetapkan posisi yang sudah dirotasi
+
+    glPopMatrix(); // Kembalikan matriks
+
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDif);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpec);
@@ -598,6 +608,8 @@ void drawScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+    setupLighting();
 
     glTranslatef(0.0f, 0.0f, zoom);
     glRotatef(angleX, 1.0f, 0.0f, 0.0f);
@@ -619,7 +631,6 @@ void drawScene()
 void setup()
 {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-    setupLighting();
     glShadeModel(GL_SMOOTH);
 }
 
@@ -671,6 +682,14 @@ void keyInput(unsigned char key, int x, int y)
         angleY = 0.0f;
         zoom = -45.0f;
         break;
+    case '[':
+        lightAngle -= 5.0f; // Rotasi berlawanan jarum jam
+        setupLighting();    // Perbarui posisi cahaya
+        break;
+    case ']':
+        lightAngle += 5.0f; // Rotasi searah jarum jam
+        setupLighting();    // Perbarui posisi cahaya
+        break;
     case ' ':
         if (selectedGateIndex >= 0) {
             Gates& g = gates[selectedGateIndex];
@@ -720,6 +739,7 @@ void printInteraction()
     std::cout << "- SPASI: Buka/Tutup palang yang dipilih" << std::endl;
     std::cout << "- KLIK: Pilih palang" << std::endl;
     std::cout << "- R: Reset posisi" << std::endl;
+    std::cout << "- { / }: Ubah arah cahaya" << std::endl;
     std::cout << "- ESC: Keluar" << std::endl;
 }
 
