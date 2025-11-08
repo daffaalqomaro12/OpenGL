@@ -589,7 +589,7 @@ void setupLighting()
     GLfloat lightPos[] = { 5.0f, 10.0f, 10.0f, 1.0f };
     GLfloat lightAmb[] = { 0.3f, 0.3f, 0.3f, 1.0f };
     GLfloat lightDif[] = { 0.7f, 0.7f, 0.7f, 1.0f }; 
-    GLfloat lightSpec[] = { 0.7f, 0.7f, 0.7f, 1.0f }; 
+    GLfloat lightSpec[] = { 1.7f, 1.7f, 1.7f, 1.0f }; 
 
     // Rotasi cahaya Matriks ModelView
     glMatrixMode(GL_MODELVIEW); 
